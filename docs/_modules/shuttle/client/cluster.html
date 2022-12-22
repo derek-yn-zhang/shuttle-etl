@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>shuttle.client.cluster &mdash; Shuttle: Trade Credit ETL Library  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Shuttle: Trade Credit ETL Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline.html">Shuttle Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../session.html">Shuttle Session</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../client.html">Shuttle Client Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../request.html">Shuttle Request Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../common.html">Shuttle Common Package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Shuttle: Trade Credit ETL Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">shuttle.client.cluster</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for shuttle.client.cluster</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">boto3</span>
+<span class="kn">import</span> <span class="nn">logging.handlers</span>
+<span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">Template</span>
+<span class="kn">from</span> <span class="nn">shuttle.client.git</span> <span class="kn">import</span> <span class="n">GithubClient</span>
+<span class="kn">from</span> <span class="nn">botocore.exceptions</span> <span class="kn">import</span> <span class="n">WaiterError</span><span class="p">,</span> <span class="n">ClientError</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ClusterClient"><a class="viewcode-back" href="../../../client.html#shuttle.client.ClusterClient">[docs]</a><span class="k">class</span> <span class="nc">ClusterClient</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interface for interacting with an EMR cluster.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    github</span>
+<span class="sd">        Github repository client.</span>
+<span class="sd">    template</span>
+<span class="sd">        Template for EMR step substitution.</span>
+<span class="sd">    jobFlowId</span>
+<span class="sd">        EMR cluster ID for the current EC2 instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">github</span><span class="p">:</span> <span class="n">GithubClient</span><span class="p">,</span> <span class="n">template</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">jobFlowId</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">github</span> <span class="o">=</span> <span class="n">github</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="n">template</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jobFlowId</span> <span class="o">=</span> <span class="n">jobFlowId</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emr_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">&quot;emr&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ClusterClient.read_step"><a class="viewcode-back" href="../../../client.html#shuttle.client.ClusterClient.read_step">[docs]</a>    <span class="k">def</span> <span class="nf">read_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read step from the github configuration repository, and</span>
+<span class="sd">        subsitute templated values.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        step</span>
+<span class="sd">            Step configuration file stem.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict:</span>
+<span class="sd">            Step configuration mapping.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">file_name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{env}</span><span class="s2">/</span><span class="si">{step_prefix}</span><span class="s2">/</span><span class="si">{step}</span><span class="s2">.yaml&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">env</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;api_env&quot;</span><span class="p">],</span> <span class="n">step_prefix</span><span class="o">=</span><span class="s2">&quot;steps&quot;</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span>
+        <span class="p">)</span>
+        <span class="n">file_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">github</span><span class="o">.</span><span class="n">get_file_string</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span>
+            <span class="n">Template</span><span class="p">(</span><span class="n">file_string</span><span class="p">)</span><span class="o">.</span><span class="n">safe_substitute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClusterClient.add_step"><a class="viewcode-back" href="../../../client.html#shuttle.client.ClusterClient.add_step">[docs]</a>    <span class="k">def</span> <span class="nf">add_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add cluster step.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        step_config</span>
+<span class="sd">            Step configuration mapping.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str:</span>
+<span class="sd">            Step ID of a successfully added step.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">emr_client</span><span class="o">.</span><span class="n">add_job_flow_steps</span><span class="p">(</span>
+                <span class="n">JobFlowId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jobFlowId</span><span class="p">,</span> <span class="n">Steps</span><span class="o">=</span><span class="n">step_config</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;StepIds&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="n">ClientError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t add steps&quot;</span><span class="p">)</span>
+            <span class="k">raise</span></div>
+
+<div class="viewcode-block" id="ClusterClient.wait"><a class="viewcode-back" href="../../../client.html#shuttle.client.ClusterClient.wait">[docs]</a>    <span class="k">def</span> <span class="nf">wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wait for cluster step to complete.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        step_name</span>
+<span class="sd">            Name of step to wait for.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">step_id</span><span class="p">,</span> <span class="n">step_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_step</span><span class="p">(</span><span class="n">step_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">step_state</span> <span class="o">==</span> <span class="s2">&quot;COMPLETED&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">step_state</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;PENDING&quot;</span><span class="p">,</span> <span class="s2">&quot;RUNNING&quot;</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Waiting for step </span><span class="si">{</span><span class="n">step_name</span><span class="si">}</span><span class="s2"> to complete...&quot;</span><span class="p">)</span>
+            <span class="n">waiter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">emr_client</span><span class="o">.</span><span class="n">get_waiter</span><span class="p">(</span><span class="s2">&quot;step_complete&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">waiter</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span>
+                    <span class="n">ClusterId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jobFlowId</span><span class="p">,</span>
+                    <span class="n">StepId</span><span class="o">=</span><span class="n">step_id</span><span class="p">,</span>
+                    <span class="n">WaiterConfig</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Delay&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s2">&quot;MaxAttempts&quot;</span><span class="p">:</span> <span class="mi">300</span><span class="p">},</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="n">WaiterError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Step &#39;</span><span class="si">{</span><span class="n">step_name</span><span class="si">}</span><span class="s2">&#39; failed while waiting:</span><span class="se">\n</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Step &#39;</span><span class="si">{</span><span class="n">step_name</span><span class="si">}</span><span class="s2">&#39; has already failed with state &#39;</span><span class="si">{</span><span class="n">step_state</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                <span class="c1"># [&quot;CANCEL_PENDING&quot;, &quot;CANCELLED&quot;, &quot;FAILED&quot;, &quot;INTERRUPTED&quot;]</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClusterClient.get_step"><a class="viewcode-back" href="../../../client.html#shuttle.client.ClusterClient.get_step">[docs]</a>    <span class="k">def</span> <span class="nf">get_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get details of cluster step.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        step_name</span>
+<span class="sd">            Name of step to describe.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        step_id: str</span>
+<span class="sd">            Step ID.</span>
+<span class="sd">        step_state: str</span>
+<span class="sd">            Step state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_steps</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Steps&quot;</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="k">if</span> <span class="n">step_name</span> <span class="o">==</span> <span class="n">step</span><span class="p">[</span><span class="s2">&quot;Name&quot;</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="n">step</span><span class="p">[</span><span class="s2">&quot;Id&quot;</span><span class="p">],</span> <span class="n">step</span><span class="p">[</span><span class="s2">&quot;Status&quot;</span><span class="p">][</span><span class="s2">&quot;State&quot;</span><span class="p">]</span>
+        <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Step &#39;</span><span class="si">{</span><span class="n">step_name</span><span class="si">}</span><span class="s2">&#39; was not found&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClusterClient.list_steps"><a class="viewcode-back" href="../../../client.html#shuttle.client.ClusterClient.list_steps">[docs]</a>    <span class="k">def</span> <span class="nf">list_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List all cluster steps.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            Contains the list of steps under key ``Steps``, returned in reverse order.</span>
+<span class="sd">            This means that the last step is the first element in the list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">emr_client</span><span class="o">.</span><span class="n">list_steps</span><span class="p">(</span><span class="n">ClusterId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jobFlowId</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Capital One.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

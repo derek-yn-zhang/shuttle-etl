@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shuttle Session &mdash; Shuttle: Trade Credit ETL Library  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Shuttle Client Package" href="client.html" />
+    <link rel="prev" title="Shuttle Pipeline" href="pipeline.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Shuttle: Trade Credit ETL Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pipeline.html">Shuttle Pipeline</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Shuttle Session</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-shuttle.session">shuttle.session</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.session.Session"><code class="docutils literal notranslate"><span class="pre">Session</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.job"><code class="docutils literal notranslate"><span class="pre">Session.job</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.template"><code class="docutils literal notranslate"><span class="pre">Session.template</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.accountId"><code class="docutils literal notranslate"><span class="pre">Session.accountId</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.region"><code class="docutils literal notranslate"><span class="pre">Session.region</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.jobFlowId"><code class="docutils literal notranslate"><span class="pre">Session.jobFlowId</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.cluster"><code class="docutils literal notranslate"><span class="pre">Session.cluster</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.vault"><code class="docutils literal notranslate"><span class="pre">Session.vault</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.devex"><code class="docutils literal notranslate"><span class="pre">Session.devex</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.github"><code class="docutils literal notranslate"><span class="pre">Session.github</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.ops"><code class="docutils literal notranslate"><span class="pre">Session.ops</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.mssql"><code class="docutils literal notranslate"><span class="pre">Session.mssql</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.psql"><code class="docutils literal notranslate"><span class="pre">Session.psql</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.s3_stage"><code class="docutils literal notranslate"><span class="pre">Session.s3_stage</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.source"><code class="docutils literal notranslate"><span class="pre">Session.source</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.turing"><code class="docutils literal notranslate"><span class="pre">Session.turing</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.oneingest"><code class="docutils literal notranslate"><span class="pre">Session.oneingest</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.get_instance_profile"><code class="docutils literal notranslate"><span class="pre">Session.get_instance_profile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.parse_config"><code class="docutils literal notranslate"><span class="pre">Session.parse_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.update_config"><code class="docutils literal notranslate"><span class="pre">Session.update_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.load_secrets"><code class="docutils literal notranslate"><span class="pre">Session.load_secrets()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.obscure"><code class="docutils literal notranslate"><span class="pre">Session.obscure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.get_spark_session"><code class="docutils literal notranslate"><span class="pre">Session.get_spark_session()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.session.Session.export_constants"><code class="docutils literal notranslate"><span class="pre">Session.export_constants()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="client.html">Shuttle Client Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="request.html">Shuttle Request Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common.html">Shuttle Common Package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Shuttle: Trade Credit ETL Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Shuttle Session</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/session.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="shuttle-session">
+<h1>Shuttle Session<a class="headerlink" href="#shuttle-session" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<section id="module-shuttle.session">
+<span id="id1"></span><h2>shuttle.session<a class="headerlink" href="#module-shuttle.session" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="shuttle.session.Session">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shuttle.session.</span></span><span class="sig-name descname"><span class="pre">Session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/session.html#Session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.session.Session" title="Permalink to this definition"></a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">Session</span></code> class is the environment execution context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Configuration file name.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.session.Session.job">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">job</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="common.html#shuttle.common.model.JobConfig" title="shuttle.common.model.JobConfig"><span class="pre">JobConfig</span></a></em><a class="headerlink" href="#shuttle.session.Session.job" title="Permalink to this definition"></a></dt>
+<dd><p>Get current job configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="common.html#shuttle.common.model.JobConfig" title="shuttle.common.model.JobConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">JobConfig</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.session.Session.template">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">template</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a></em><a class="headerlink" href="#shuttle.session.Session.template" title="Permalink to this definition"></a></dt>
+<dd><p>Get EMR template, populated with exported constants.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.session.Session.accountId">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">accountId</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#shuttle.session.Session.accountId" title="Permalink to this definition"></a></dt>
+<dd><p>Get AWS account ID for the current EC2 instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.session.Session.region">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">region</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#shuttle.session.Session.region" title="Permalink to this definition"></a></dt>
+<dd><p>Get AWS region for the current EC2 instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.session.Session.jobFlowId">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">jobFlowId</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#shuttle.session.Session.jobFlowId" title="Permalink to this definition"></a></dt>
+<dd><p>Get EMR cluster ID for the current EC2 instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.session.Session.cluster">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cluster</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="client.html#shuttle.client.ClusterClient" title="shuttle.client.cluster.ClusterClient"><span class="pre">ClusterClient</span></a></em><a class="headerlink" href="#shuttle.session.Session.cluster" title="Permalink to this definition"></a></dt>
+<dd><p>Get cluster client for the current EC2 instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="client.html#shuttle.client.ClusterClient" title="shuttle.client.cluster.ClusterClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">ClusterClient</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.session.Session.vault">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vault</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="client.html#shuttle.client.VaultClient" title="shuttle.client.vault.VaultClient"><span class="pre">VaultClient</span></a></em><a class="headerlink" href="#shuttle.session.Session.vault" title="Permalink to this definition"></a></dt>
+<dd><p>Get vault client with the provided lockbox configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="client.html#shuttle.client.VaultClient" title="shuttle.client.vault.VaultClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">VaultClient</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.session.Session.devex">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">devex</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="common.html#shuttle.common.model.DevExchangeConfig" title="shuttle.common.model.DevExchangeConfig"><span class="pre">DevExchangeConfig</span></a></em><a class="headerlink" href="#shuttle.session.Session.devex" title="Permalink to this definition"></a></dt>
+<dd><p>Get DevExchange configuration object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="common.html#shuttle.common.model.DevExchangeConfig" title="shuttle.common.model.DevExchangeConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DevExchangeConfig</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.session.Session.github">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">github</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="client.html#shuttle.client.GithubClient" title="shuttle.client.git.GithubClient"><span class="pre">GithubClient</span></a></em><a class="headerlink" href="#shuttle.session.Session.github" title="Permalink to this definition"></a></dt>
+<dd><p>Get Github client with the provided Github repository configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="client.html#shuttle.client.GithubClient" title="shuttle.client.git.GithubClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">GithubClient</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.session.Session.ops">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ops</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="client.html#shuttle.client.DatabaseClient" title="shuttle.client.database.DatabaseClient"><span class="pre">DatabaseClient</span></a></em><a class="headerlink" href="#shuttle.session.Session.ops" title="Permalink to this definition"></a></dt>
+<dd><p>Get <code class="docutils literal notranslate"><span class="pre">ops</span></code> database client with the provided server configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="client.html#shuttle.client.DatabaseClient" title="shuttle.client.database.DatabaseClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatabaseClient</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.session.Session.mssql">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mssql</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="client.html#shuttle.client.DatabaseClient" title="shuttle.client.database.DatabaseClient"><span class="pre">DatabaseClient</span></a></em><a class="headerlink" href="#shuttle.session.Session.mssql" title="Permalink to this definition"></a></dt>
+<dd><p>Get <code class="docutils literal notranslate"><span class="pre">SQL</span> <span class="pre">Server</span></code> master database client with the provided server configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="client.html#shuttle.client.DatabaseClient" title="shuttle.client.database.DatabaseClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatabaseClient</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.session.Session.psql">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">psql</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="client.html#shuttle.client.DatabaseClient" title="shuttle.client.database.DatabaseClient"><span class="pre">DatabaseClient</span></a></em><a class="headerlink" href="#shuttle.session.Session.psql" title="Permalink to this definition"></a></dt>
+<dd><p>Get <code class="docutils literal notranslate"><span class="pre">PostgreSQL</span></code> master database client with the provided server configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="client.html#shuttle.client.DatabaseClient" title="shuttle.client.database.DatabaseClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatabaseClient</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.session.Session.s3_stage">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">s3_stage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="client.html#shuttle.client.StageClient" title="shuttle.client.stage.StageClient"><span class="pre">StageClient</span></a></em><a class="headerlink" href="#shuttle.session.Session.s3_stage" title="Permalink to this definition"></a></dt>
+<dd><p>Get s3 stage client for the current extract.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="client.html#shuttle.client.StageClient" title="shuttle.client.stage.StageClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">StageClient</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.session.Session.source">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">source</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="client.html#shuttle.client.SourceClient" title="shuttle.client.source.SourceClient"><span class="pre">SourceClient</span></a></em><a class="headerlink" href="#shuttle.session.Session.source" title="Permalink to this definition"></a></dt>
+<dd><p>Get source client for the current extract.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="client.html#shuttle.client.SourceClient" title="shuttle.client.source.SourceClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">SourceClient</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.session.Session.turing">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">turing</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="client.html#shuttle.client.TuringClient" title="shuttle.client.turing.TuringClient"><span class="pre">TuringClient</span></a></em><a class="headerlink" href="#shuttle.session.Session.turing" title="Permalink to this definition"></a></dt>
+<dd><p>Get Turing client with the provided DevExchange configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="client.html#shuttle.client.TuringClient" title="shuttle.client.turing.TuringClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">TuringClient</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.session.Session.oneingest">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">oneingest</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="client.html#shuttle.client.OneingestClient" title="shuttle.client.oneingest.OneingestClient"><span class="pre">OneingestClient</span></a></em><a class="headerlink" href="#shuttle.session.Session.oneingest" title="Permalink to this definition"></a></dt>
+<dd><p>Get OneIngest client with the provided DevExchange configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="client.html#shuttle.client.OneingestClient" title="shuttle.client.oneingest.OneingestClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">OneingestClient</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.session.Session.get_instance_profile">
+<span class="sig-name descname"><span class="pre">get_instance_profile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/session.html#Session.get_instance_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.session.Session.get_instance_profile" title="Permalink to this definition"></a></dt>
+<dd><p>Read instance attributes from the local EC2 meta store.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Dictionary of instance data.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.session.Session.parse_config">
+<span class="sig-name descname"><span class="pre">parse_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/session.html#Session.parse_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.session.Session.parse_config" title="Permalink to this definition"></a></dt>
+<dd><p>Parse configuration file based on the environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Configuration file name.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Parsed configuration mapping.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DotMap</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.session.Session.update_config">
+<span class="sig-name descname"><span class="pre">update_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">update</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/session.html#Session.update_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.session.Session.update_config" title="Permalink to this definition"></a></dt>
+<dd><p>Helper method for dictionary update and insert.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>update</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Dictionary to merge.</p></li>
+<li><p><strong>config</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Dictionary to update.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.session.Session.load_secrets">
+<span class="sig-name descname"><span class="pre">load_secrets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/session.html#Session.load_secrets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.session.Session.load_secrets" title="Permalink to this definition"></a></dt>
+<dd><p>Load secrets into configuration mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DotMap</span></code>) – Configuration mapping.</p></li>
+<li><p><strong>display</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DotMap</span></code>) – Display mapping (sensitive values are obscured).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.session.Session.obscure">
+<span class="sig-name descname"><span class="pre">obscure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peek</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/session.html#Session.obscure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.session.Session.obscure" title="Permalink to this definition"></a></dt>
+<dd><p>Helper method for obscuring strings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – String to obscure.</p></li>
+<li><p><strong>peek</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – Number of characters to keep visible.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.session.Session.get_spark_session">
+<span class="sig-name descname"><span class="pre">get_spark_session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/session.html#Session.get_spark_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.session.Session.get_spark_session" title="Permalink to this definition"></a></dt>
+<dd><p>Get spark session.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SparkSession</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.session.Session.export_constants">
+<span class="sig-name descname"><span class="pre">export_constants</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/session.html#Session.export_constants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.session.Session.export_constants" title="Permalink to this definition"></a></dt>
+<dd><p>Export constants as environment variables.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.html" class="btn btn-neutral float-left" title="Shuttle Pipeline" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="client.html" class="btn btn-neutral float-right" title="Shuttle Client Package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Capital One.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

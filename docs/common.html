@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shuttle Common Package &mdash; Shuttle: Trade Credit ETL Library  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Shuttle Request Package" href="request.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Shuttle: Trade Credit ETL Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pipeline.html">Shuttle Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="session.html">Shuttle Session</a></li>
+<li class="toctree-l1"><a class="reference internal" href="client.html">Shuttle Client Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="request.html">Shuttle Request Package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Shuttle Common Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-shuttle.common.model">shuttle.common.model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.common.model.JobConfig"><code class="docutils literal notranslate"><span class="pre">JobConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.common.model.VaultConfig"><code class="docutils literal notranslate"><span class="pre">VaultConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.common.model.DatabaseConfig"><code class="docutils literal notranslate"><span class="pre">DatabaseConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.common.model.GithubConfig"><code class="docutils literal notranslate"><span class="pre">GithubConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.common.model.DevExchangeConfig"><code class="docutils literal notranslate"><span class="pre">DevExchangeConfig</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-shuttle.common.path">shuttle.common.path</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.common.path.stage"><code class="docutils literal notranslate"><span class="pre">stage()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.common.path.schema"><code class="docutils literal notranslate"><span class="pre">schema()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-shuttle.common.pprint">shuttle.common.pprint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.common.pprint.banner"><code class="docutils literal notranslate"><span class="pre">banner()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.common.pprint.dump"><code class="docutils literal notranslate"><span class="pre">dump()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-shuttle.common.decorator">shuttle.common.decorator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.common.decorator.timeit"><code class="docutils literal notranslate"><span class="pre">timeit()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Shuttle: Trade Credit ETL Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Shuttle Common Package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/common.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="shuttle-common-package">
+<h1>Shuttle Common Package<a class="headerlink" href="#shuttle-common-package" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<section id="module-shuttle.common.model">
+<span id="shuttle-common-model"></span><h2>shuttle.common.model<a class="headerlink" href="#module-shuttle.common.model" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="shuttle.common.model.JobConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shuttle.common.model.</span></span><span class="sig-name descname"><span class="pre">JobConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">business_application</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokenize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'parquet'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sdp_protocol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rest'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sqoop_update_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sqoop_mappers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_partitions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/common/model.html#JobConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.common.model.JobConfig" title="Permalink to this definition"></a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">JobConfig</span></code> class configures a job for the <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code> class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Extract name.</p></li>
+<li><p><strong>source</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – <dl class="simple">
+<dt>Source location. Accepted values are:</dt><dd><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">mssql</span></code>: Data is located in <code class="docutils literal notranslate"><span class="pre">SQL</span> <span class="pre">Server</span></code> only.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">psql</span></code>: Data is located in <code class="docutils literal notranslate"><span class="pre">PostgreSQL</span></code> only.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hybrid</span></code>: Data is located in both <code class="docutils literal notranslate"><span class="pre">SQL</span> <span class="pre">Server</span></code> and <code class="docutils literal notranslate"><span class="pre">PostgreSQL</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">s3</span></code>: Data is staged in <code class="docutils literal notranslate"><span class="pre">s3</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>target</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – <dl class="simple">
+<dt>Target location. Accepted values are:</dt><dd><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">s3</span></code>: Stage data in <code class="docutils literal notranslate"><span class="pre">s3</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ops</span></code>: Write data to the <code class="docutils literal notranslate"><span class="pre">ops</span></code> database in <code class="docutils literal notranslate"><span class="pre">SQL</span> <span class="pre">Server</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ol</span></code>: Submit data to <code class="docutils literal notranslate"><span class="pre">OneIngest</span></code> for downstream publishing to <code class="docutils literal notranslate"><span class="pre">One</span> <span class="pre">Lake</span></code>, <code class="docutils literal notranslate"><span class="pre">Snowflake</span></code>, etc.</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>config_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Configuration file for the application environment.</p></li>
+<li><p><strong>business_application</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – OneStream business application. Required for <code class="docutils literal notranslate"><span class="pre">target=ol</span></code> and <code class="docutils literal notranslate"><span class="pre">tokenize=True</span></code>.</p></li>
+<li><p><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – Declare step dependency. Max wait is 2.5 hours.</p></li>
+<li><p><strong>dry_run</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – Run job without writing to target location.</p></li>
+<li><p><strong>tokenize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – Tokenize extracted data.</p></li>
+<li><p><strong>s3_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – File format for s3 operations. Accepted values are <code class="docutils literal notranslate"><span class="pre">parquet</span></code> and <code class="docutils literal notranslate"><span class="pre">csv</span></code>.</p></li>
+<li><p><strong>sdp_protocol</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – Protocol for publishing data to <code class="docutils literal notranslate"><span class="pre">OneIngest</span></code>. Accepted values are <code class="docutils literal notranslate"><span class="pre">rest</span></code> and <code class="docutils literal notranslate"><span class="pre">grpc</span></code>.
+Publishing with <code class="docutils literal notranslate"><span class="pre">rest</span></code> requires first staging in s3, i.e., <code class="docutils literal notranslate"><span class="pre">target=[s3,</span> <span class="pre">ol]</span></code>.</p></li>
+<li><p><strong>delta_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – Perform delta based on the maximum value of this key in the previous extract.
+Source query must use <code class="docutils literal notranslate"><span class="pre">{delta_key}</span></code> to denote replacement.</p></li>
+<li><p><strong>update_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – <dl class="simple">
+<dt>Method for updating an existing table. Required for <code class="docutils literal notranslate"><span class="pre">target=ops</span></code>. Accepted values are:</dt><dd><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">overwrite</span></code>: Truncate then load all.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">append</span></code>: Append all. This mode exports from s3 with Sqoop, i.e., <code class="docutils literal notranslate"><span class="pre">target=[s3,</span> <span class="pre">ops]</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">upsert</span></code>: Update or insert based on <code class="docutils literal notranslate"><span class="pre">sqoop_update_key</span></code>. This mode exports from s3 with Sqoop, i.e., <code class="docutils literal notranslate"><span class="pre">target=[s3,</span> <span class="pre">ops]</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>sqoop_update_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – Comma delimited list of update keys. Required for <code class="docutils literal notranslate"><span class="pre">update_mode=upsert</span></code>.</p></li>
+<li><p><strong>sqoop_mappers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – Sqoop parellelism.</p></li>
+<li><p><strong>num_partitions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – Spark parallelism.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="shuttle.common.model.VaultConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shuttle.common.model.</span></span><span class="sig-name descname"><span class="pre">VaultConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">role</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/common/model.html#VaultConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.common.model.VaultConfig" title="Permalink to this definition"></a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">VaultConfig</span></code> class configures a lockbox for the <code class="docutils literal notranslate"><span class="pre">VaultService</span></code> class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Lockbox ID.</p></li>
+<li><p><strong>role</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Lockbox access role.</p></li>
+<li><p><strong>address</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Chamber of secrets address.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="shuttle.common.model.DatabaseConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shuttle.common.model.</span></span><span class="sig-name descname"><span class="pre">DatabaseConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jdbc_driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jdbc_template</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_host</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/common/model.html#DatabaseConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.common.model.DatabaseConfig" title="Permalink to this definition"></a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">DatabaseConfig</span></code> class configures a database connection for the <code class="docutils literal notranslate"><span class="pre">DatabaseClient</span></code> class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>host</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Host address.</p></li>
+<li><p><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Connection port.</p></li>
+<li><p><strong>database</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Database name.</p></li>
+<li><p><strong>username</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Database username.</p></li>
+<li><p><strong>password</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Database password.</p></li>
+<li><p><strong>jdbc_driver</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Java class path for JDBC driver.</p></li>
+<li><p><strong>jdbc_template</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Template for JDBC connection string.</p></li>
+<li><p><strong>write_host</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – Specify to read and write to different hosts.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="shuttle.common.model.GithubConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shuttle.common.model.</span></span><span class="sig-name descname"><span class="pre">GithubConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">org</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/common/model.html#GithubConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.common.model.GithubConfig" title="Permalink to this definition"></a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">GithubConfig</span></code> class configures an enterprise repository for the <code class="docutils literal notranslate"><span class="pre">GithubClient</span></code> class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>org</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Github organization</p></li>
+<li><p><strong>repo</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Github repository</p></li>
+<li><p><strong>base_url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Github enterprise API base url</p></li>
+<li><p><strong>token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Github enterprise API access token</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="shuttle.common.model.DevExchangeConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shuttle.common.model.</span></span><span class="sig-name descname"><span class="pre">DevExchangeConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_secret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/common/model.html#DevExchangeConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.common.model.DevExchangeConfig" title="Permalink to this definition"></a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">DevExchangeConfig</span></code> class configures OAuth2 authentication to DevExchange.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – OAuth2 client ID provided during client application registration in DevExchange.</p></li>
+<li><p><strong>client_secret</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – OAuth2 client secret provided during client application registration in DevExchange.</p></li>
+<li><p><strong>env</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – DevExchange environment where the client application is registered. Accepted values are are <code class="docutils literal notranslate"><span class="pre">IT</span></code> and <code class="docutils literal notranslate"><span class="pre">PROD</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-shuttle.common.path">
+<span id="shuttle-common-path"></span><h2>shuttle.common.path<a class="headerlink" href="#module-shuttle.common.path" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="shuttle.common.path.stage">
+<span class="sig-prename descclassname"><span class="pre">shuttle.common.path.</span></span><span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/common/path.html#stage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.common.path.stage" title="Permalink to this definition"></a></dt>
+<dd><p>Get the s3 staging address for a dataset on a given date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Extract name.</p></li>
+<li><p><strong>date</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code>) – Extract date.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>s3 staging address.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="shuttle.common.path.schema">
+<span class="sig-prename descclassname"><span class="pre">shuttle.common.path.</span></span><span class="sig-name descname"><span class="pre">schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/common/path.html#schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.common.path.schema" title="Permalink to this definition"></a></dt>
+<dd><p>Get the s3 schema key for a dataset on a given date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Extract name.</p></li>
+<li><p><strong>date</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code>) – Extract date.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>s3 schema key.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-shuttle.common.pprint">
+<span id="shuttle-common-pprint"></span><h2>shuttle.common.pprint<a class="headerlink" href="#module-shuttle.common.pprint" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="shuttle.common.pprint.banner">
+<span class="sig-prename descclassname"><span class="pre">shuttle.common.pprint.</span></span><span class="sig-name descname"><span class="pre">banner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'='</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/common/pprint.html#banner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.common.pprint.banner" title="Permalink to this definition"></a></dt>
+<dd><p>Print a centered text banner.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Banner text.</p></li>
+<li><p><strong>width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Banner width.</p></li>
+<li><p><strong>char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Banner character.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="shuttle.common.pprint.dump">
+<span class="sig-prename descclassname"><span class="pre">shuttle.common.pprint.</span></span><span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/common/pprint.html#dump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.common.pprint.dump" title="Permalink to this definition"></a></dt>
+<dd><p>Print dictionary as yaml.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Dictionary to print.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-shuttle.common.decorator">
+<span id="shuttle-common-decorator"></span><h2>shuttle.common.decorator<a class="headerlink" href="#module-shuttle.common.decorator" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="shuttle.common.decorator.timeit">
+<span class="sig-prename descclassname"><span class="pre">shuttle.common.decorator.</span></span><span class="sig-name descname"><span class="pre">timeit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/common/decorator.html#timeit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.common.decorator.timeit" title="Permalink to this definition"></a></dt>
+<dd><p>Time the execution of a function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>) – Function to time.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Input function wrapped with timing logic.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="request.html" class="btn btn-neutral float-left" title="Shuttle Request Package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Capital One.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

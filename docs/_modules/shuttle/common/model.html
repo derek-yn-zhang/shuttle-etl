@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>shuttle.common.model &mdash; Shuttle: Trade Credit ETL Library  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Shuttle: Trade Credit ETL Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline.html">Shuttle Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../session.html">Shuttle Session</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../client.html">Shuttle Client Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../request.html">Shuttle Request Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../common.html">Shuttle Common Package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Shuttle: Trade Credit ETL Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">shuttle.common.model</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for shuttle.common.model</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">import</span> <span class="nn">shuttle.common.pprint</span> <span class="k">as</span> <span class="nn">pprint</span>
+
+
+<div class="viewcode-block" id="JobConfig"><a class="viewcode-back" href="../../../common.html#shuttle.common.model.JobConfig">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">JobConfig</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The ``JobConfig`` class configures a job for the ``Pipeline`` class.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset: str</span>
+<span class="sd">        Extract name.</span>
+<span class="sd">    source: str</span>
+<span class="sd">        Source location. Accepted values are:</span>
+<span class="sd">            - ``mssql``: Data is located in ``SQL Server`` only.</span>
+<span class="sd">            - ``psql``: Data is located in ``PostgreSQL`` only.</span>
+<span class="sd">            - ``hybrid``: Data is located in both ``SQL Server`` and ``PostgreSQL``.</span>
+<span class="sd">            - ``s3``: Data is staged in ``s3``.</span>
+<span class="sd">    target: str</span>
+<span class="sd">        Target location. Accepted values are:</span>
+<span class="sd">            - ``s3``: Stage data in ``s3``.</span>
+<span class="sd">            - ``ops``: Write data to the ``ops`` database in ``SQL Server``.</span>
+<span class="sd">            - ``ol``: Submit data to ``OneIngest`` for downstream publishing to ``One Lake``, ``Snowflake``, etc.</span>
+<span class="sd">    config_file: str</span>
+<span class="sd">        Configuration file for the application environment.</span>
+<span class="sd">    business_application: str, optional</span>
+<span class="sd">        OneStream business application. Required for ``target=ol`` and ``tokenize=True``.</span>
+<span class="sd">    wait: str, optional</span>
+<span class="sd">        Declare step dependency. Max wait is 2.5 hours.</span>
+<span class="sd">    dry_run: bool, optional</span>
+<span class="sd">        Run job without writing to target location.</span>
+<span class="sd">    tokenize: bool, optional</span>
+<span class="sd">        Tokenize extracted data.</span>
+<span class="sd">    s3_format: str, optional</span>
+<span class="sd">        File format for s3 operations. Accepted values are ``parquet`` and ``csv``.</span>
+<span class="sd">    sdp_protocol: str, optional</span>
+<span class="sd">        Protocol for publishing data to ``OneIngest``. Accepted values are ``rest`` and ``grpc``.</span>
+<span class="sd">        Publishing with ``rest`` requires first staging in s3, i.e., ``target=[s3, ol]``.</span>
+<span class="sd">    delta_key: str, optional</span>
+<span class="sd">        Perform delta based on the maximum value of this key in the previous extract.</span>
+<span class="sd">        Source query must use ``{delta_key}`` to denote replacement.</span>
+<span class="sd">    update_mode: str, optional</span>
+<span class="sd">        Method for updating an existing table. Required for ``target=ops``. Accepted values are:</span>
+<span class="sd">            - ``overwrite``: Truncate then load all.</span>
+<span class="sd">            - ``append``: Append all. This mode exports from s3 with Sqoop, i.e., ``target=[s3, ops]``.</span>
+<span class="sd">            - ``upsert``: Update or insert based on ``sqoop_update_key``. This mode exports from s3 with Sqoop, i.e., ``target=[s3, ops]``.</span>
+<span class="sd">    sqoop_update_key: str, optional</span>
+<span class="sd">        Comma delimited list of update keys. Required for ``update_mode=upsert``.</span>
+<span class="sd">    sqoop_mappers: int, optional</span>
+<span class="sd">        Sqoop parellelism.</span>
+<span class="sd">    num_partitions: int, optional</span>
+<span class="sd">        Spark parallelism.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">target</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">config_file</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">business_application</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">wait</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">tokenize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">s3_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;parquet&quot;</span>
+    <span class="n">sdp_protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rest&quot;</span>
+    <span class="n">delta_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">update_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">sqoop_update_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">sqoop_mappers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="n">num_partitions</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">print_config</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">print_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pprint</span><span class="o">.</span><span class="n">banner</span><span class="p">(</span><span class="s2">&quot;JOB CONFIGURATION&quot;</span><span class="p">)</span>
+        <span class="n">pprint</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="VaultConfig"><a class="viewcode-back" href="../../../common.html#shuttle.common.model.VaultConfig">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">VaultConfig</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The ``VaultConfig`` class configures a lockbox for the ``VaultService`` class.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    id: str</span>
+<span class="sd">        Lockbox ID.</span>
+<span class="sd">    role:</span>
+<span class="sd">        Lockbox access role.</span>
+<span class="sd">    address:</span>
+<span class="sd">        Chamber of secrets address.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">role</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">address</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+<div class="viewcode-block" id="DatabaseConfig"><a class="viewcode-back" href="../../../common.html#shuttle.common.model.DatabaseConfig">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">DatabaseConfig</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The ``DatabaseConfig`` class configures a database connection for the ``DatabaseClient`` class.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    host: str</span>
+<span class="sd">        Host address.</span>
+<span class="sd">    port: str</span>
+<span class="sd">        Connection port.</span>
+<span class="sd">    database: str</span>
+<span class="sd">        Database name.</span>
+<span class="sd">    username: str</span>
+<span class="sd">        Database username.</span>
+<span class="sd">    password: str</span>
+<span class="sd">        Database password.</span>
+<span class="sd">    jdbc_driver: str</span>
+<span class="sd">        Java class path for JDBC driver.</span>
+<span class="sd">    jdbc_template: str</span>
+<span class="sd">        Template for JDBC connection string.</span>
+<span class="sd">    write_host: str, optional</span>
+<span class="sd">        Specify to read and write to different hosts.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">host</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">port</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">database</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">password</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">jdbc_driver</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">jdbc_template</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">write_host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_host</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span></div>
+
+
+<div class="viewcode-block" id="GithubConfig"><a class="viewcode-back" href="../../../common.html#shuttle.common.model.GithubConfig">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">GithubConfig</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The ``GithubConfig`` class configures an enterprise repository for the ``GithubClient`` class.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    org: str</span>
+<span class="sd">        Github organization</span>
+<span class="sd">    repo: str</span>
+<span class="sd">        Github repository</span>
+<span class="sd">    base_url:</span>
+<span class="sd">        Github enterprise API base url</span>
+<span class="sd">    token: str</span>
+<span class="sd">        Github enterprise API access token</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">org</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">repo</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">token</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+<div class="viewcode-block" id="DevExchangeConfig"><a class="viewcode-back" href="../../../common.html#shuttle.common.model.DevExchangeConfig">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">DevExchangeConfig</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The ``DevExchangeConfig`` class configures OAuth2 authentication to DevExchange.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    client_id: str</span>
+<span class="sd">        OAuth2 client ID provided during client application registration in DevExchange.</span>
+<span class="sd">    client_secret: str</span>
+<span class="sd">        OAuth2 client secret provided during client application registration in DevExchange.</span>
+<span class="sd">    env: str</span>
+<span class="sd">        DevExchange environment where the client application is registered. Accepted values are are ``IT`` and ``PROD``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">client_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">client_secret</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">env</span><span class="p">:</span> <span class="nb">str</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Capital One.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

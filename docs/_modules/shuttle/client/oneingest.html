@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>shuttle.client.oneingest &mdash; Shuttle: Trade Credit ETL Library  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Shuttle: Trade Credit ETL Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline.html">Shuttle Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../session.html">Shuttle Session</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../client.html">Shuttle Client Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../request.html">Shuttle Request Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../common.html">Shuttle Common Package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Shuttle: Trade Credit ETL Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">shuttle.client.oneingest</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for shuttle.client.oneingest</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">boto3</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urlparse</span>
+<span class="kn">import</span> <span class="nn">shuttle.common.path</span> <span class="k">as</span> <span class="nn">path</span>
+<span class="kn">from</span> <span class="nn">shuttle.common.model</span> <span class="kn">import</span> <span class="n">JobConfig</span><span class="p">,</span> <span class="n">DevExchangeConfig</span>
+<span class="kn">from</span> <span class="nn">oneingest_multipart</span> <span class="kn">import</span> <span class="n">MultipartClient</span><span class="p">,</span> <span class="n">MultipartConfig</span>
+
+
+<div class="viewcode-block" id="OneingestClient"><a class="viewcode-back" href="../../../client.html#shuttle.client.OneingestClient">[docs]</a><span class="k">class</span> <span class="nc">OneingestClient</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Publish records with OneIngest via REST or gRPC.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    job</span>
+<span class="sd">        Job configuration.</span>
+<span class="sd">    devex</span>
+<span class="sd">        DevExchange Configuration.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job</span><span class="p">:</span> <span class="n">JobConfig</span><span class="p">,</span> <span class="n">devex</span><span class="p">:</span> <span class="n">DevExchangeConfig</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">job</span> <span class="o">=</span> <span class="n">job</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devex</span> <span class="o">=</span> <span class="n">devex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;api_env&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">&quot;s3&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">multipart_config</span> <span class="o">=</span> <span class="n">MultipartConfig</span><span class="p">(</span>
+            <span class="n">environment</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">,</span>
+            <span class="n">client_id</span><span class="o">=</span><span class="n">devex</span><span class="o">.</span><span class="n">client_id</span><span class="p">,</span>
+            <span class="n">client_secret</span><span class="o">=</span><span class="n">devex</span><span class="o">.</span><span class="n">client_secret</span><span class="p">,</span>
+            <span class="n">data_lake_copy_subfolder</span><span class="o">=</span><span class="s2">&quot;processed/&quot;</span><span class="p">,</span>
+            <span class="n">file_type</span><span class="o">=</span><span class="s2">&quot;PARQUET&quot;</span><span class="p">,</span>
+            <span class="n">schema_name</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+            <span class="n">business_application</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">business_application</span><span class="p">,</span>
+        <span class="p">)</span>
+        
+<div class="viewcode-block" id="OneingestClient.stage"><a class="viewcode-back" href="../../../client.html#shuttle.client.OneingestClient.stage">[docs]</a>    <span class="k">def</span> <span class="nf">stage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get s3 staging address for a given date.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        date: datetime</span>
+<span class="sd">            Staging date.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">return</span> <span class="n">path</span><span class="o">.</span><span class="n">stage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="OneingestClient.submit"><a class="viewcode-back" href="../../../client.html#shuttle.client.OneingestClient.submit">[docs]</a>    <span class="k">def</span> <span class="nf">submit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Submit records to OneIngest.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df</span>
+<span class="sd">            Data to submit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">sdp_protocol</span> <span class="o">==</span> <span class="s2">&quot;grpc&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">submit_grpc</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">sdp_protocol</span> <span class="o">==</span> <span class="s2">&quot;rest&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">submit_rest</span><span class="p">()</span></div>
+            
+<div class="viewcode-block" id="OneingestClient.submit_grpc"><a class="viewcode-back" href="../../../client.html#shuttle.client.OneingestClient.submit_grpc">[docs]</a>    <span class="k">def</span> <span class="nf">submit_grpc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Submit dataframe records to OneIngest via gRPC.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df</span>
+<span class="sd">            Data to submit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;com.capitalone.quantum.q2.oneingest.DefaultSource&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;environment&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;businessApplication&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">business_application</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;schemaName&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+            <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;clientId&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">devex</span><span class="o">.</span><span class="n">client_id</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;clientSecret&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">devex</span><span class="o">.</span><span class="n">client_secret</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="OneingestClient.submit_rest"><a class="viewcode-back" href="../../../client.html#shuttle.client.OneingestClient.submit_rest">[docs]</a>    <span class="k">def</span> <span class="nf">submit_rest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Export files from s3 staging directory to OneIngest via REST.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">client</span> <span class="o">=</span> <span class="n">MultipartClient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">multipart_config</span><span class="p">)</span>
+        <span class="n">stage</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">())</span>
+        <span class="n">file_paths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_file_paths</span><span class="p">(</span><span class="n">stage</span><span class="p">)</span>
+        <span class="n">send_response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send_files</span><span class="p">(</span><span class="n">file_paths</span><span class="p">)</span>
+        <span class="n">submission_id</span> <span class="o">=</span> <span class="n">send_response</span><span class="p">[</span><span class="s2">&quot;fileSubmissionId&quot;</span><span class="p">]</span>
+
+        <span class="n">total_time</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">statuses</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">terminated</span> <span class="o">=</span> <span class="p">[],</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">terminated</span> <span class="ow">and</span> <span class="n">total_time</span> <span class="o">&lt;</span> <span class="mi">3600</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+            <span class="n">total_time</span> <span class="o">+=</span> <span class="mi">30</span>
+            <span class="n">statuses</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">terminated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_submission</span><span class="p">(</span>
+                <span class="n">client</span><span class="p">,</span> <span class="n">submission_id</span>
+            <span class="p">)</span>
+
+        <span class="p">[</span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">file_paths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">status</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">statuses</span><span class="p">)]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+            <span class="n">check_response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">check_submission</span><span class="p">(</span><span class="n">submission_id</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">check_response</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="OneingestClient.get_file_paths"><a class="viewcode-back" href="../../../client.html#shuttle.client.OneingestClient.get_file_paths">[docs]</a>    <span class="k">def</span> <span class="nf">get_file_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stage</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List files to submit from s3 staging directory.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        stage</span>
+<span class="sd">            S3 staging address.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">stage</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">stage</span><span class="p">,</span> <span class="n">allow_fragments</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">bucket</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">=</span> <span class="n">stage</span><span class="o">.</span><span class="n">netloc</span><span class="p">,</span> <span class="n">stage</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">list_objects_v2</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Contents&quot;</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Key&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.parquet&quot;</span><span class="p">):</span>
+                <span class="n">paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;s3://</span><span class="si">{</span><span class="n">bucket</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="p">[</span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;FOUND: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">paths</span></div>
+
+<div class="viewcode-block" id="OneingestClient.evaluate_submission"><a class="viewcode-back" href="../../../client.html#shuttle.client.OneingestClient.evaluate_submission">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_submission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">MultipartClient</span><span class="p">,</span> <span class="n">submission_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluate the status of OneIngest multipart submission.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        client</span>
+<span class="sd">            OneIngest multipart client.</span>
+<span class="sd">        submission_id</span>
+<span class="sd">            OneIngest multipart submission ID.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        statuses: list</span>
+<span class="sd">            Submission status for each part.</span>
+<span class="sd">        success: bool</span>
+<span class="sd">            True is all parts of the submission succeeded. False otherwise.</span>
+<span class="sd">        terminated: bool</span>
+<span class="sd">            True if the submission has terminated. False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">check_response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">check_submission</span><span class="p">(</span><span class="n">submission_id</span><span class="p">)</span>
+        <span class="n">statuses</span> <span class="o">=</span> <span class="p">[</span><span class="n">part</span><span class="p">[</span><span class="s2">&quot;fileStatus&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">check_response</span><span class="p">[</span><span class="s2">&quot;fileSubmissions&quot;</span><span class="p">]]</span>
+        <span class="n">terminated</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">status</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;COMPLETED&quot;</span><span class="p">,</span> <span class="s2">&quot;VALIDATION_FAILED&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">statuses</span><span class="p">)</span>
+        <span class="n">success</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;COMPLETED&quot;</span> <span class="k">for</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">statuses</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">statuses</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">terminated</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Capital One.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

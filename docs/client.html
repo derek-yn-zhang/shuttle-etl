@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shuttle Client Package &mdash; Shuttle: Trade Credit ETL Library  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Shuttle Request Package" href="request.html" />
+    <link rel="prev" title="Shuttle Session" href="session.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Shuttle: Trade Credit ETL Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pipeline.html">Shuttle Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="session.html">Shuttle Session</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Shuttle Client Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-shuttle.client">shuttle.client</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.client.GithubClient"><code class="docutils literal notranslate"><span class="pre">GithubClient</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.GithubClient.get_repo"><code class="docutils literal notranslate"><span class="pre">GithubClient.get_repo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.GithubClient.get_file_string"><code class="docutils literal notranslate"><span class="pre">GithubClient.get_file_string()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.client.VaultClient"><code class="docutils literal notranslate"><span class="pre">VaultClient</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.VaultClient.read"><code class="docutils literal notranslate"><span class="pre">VaultClient.read()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.client.StageClient"><code class="docutils literal notranslate"><span class="pre">StageClient</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.StageClient.stage"><code class="docutils literal notranslate"><span class="pre">StageClient.stage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.StageClient.schema"><code class="docutils literal notranslate"><span class="pre">StageClient.schema()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.StageClient.read"><code class="docutils literal notranslate"><span class="pre">StageClient.read()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.StageClient.write"><code class="docutils literal notranslate"><span class="pre">StageClient.write()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.StageClient.read_parquet"><code class="docutils literal notranslate"><span class="pre">StageClient.read_parquet()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.StageClient.write_parquet"><code class="docutils literal notranslate"><span class="pre">StageClient.write_parquet()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.StageClient.read_csv"><code class="docutils literal notranslate"><span class="pre">StageClient.read_csv()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.StageClient.write_csv"><code class="docutils literal notranslate"><span class="pre">StageClient.write_csv()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.client.SourceClient"><code class="docutils literal notranslate"><span class="pre">SourceClient</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.SourceClient.mssql"><code class="docutils literal notranslate"><span class="pre">SourceClient.mssql</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.SourceClient.psql"><code class="docutils literal notranslate"><span class="pre">SourceClient.psql</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.SourceClient.get_queries"><code class="docutils literal notranslate"><span class="pre">SourceClient.get_queries()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.SourceClient.get_query"><code class="docutils literal notranslate"><span class="pre">SourceClient.get_query()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.SourceClient.apply_delta"><code class="docutils literal notranslate"><span class="pre">SourceClient.apply_delta()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.client.TuringClient"><code class="docutils literal notranslate"><span class="pre">TuringClient</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.TuringClient.tokenize"><code class="docutils literal notranslate"><span class="pre">TuringClient.tokenize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.TuringClient.apply_turing"><code class="docutils literal notranslate"><span class="pre">TuringClient.apply_turing()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.TuringClient.get_turing_config"><code class="docutils literal notranslate"><span class="pre">TuringClient.get_turing_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.TuringClient.get_turing_fields"><code class="docutils literal notranslate"><span class="pre">TuringClient.get_turing_fields()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.client.ClusterClient"><code class="docutils literal notranslate"><span class="pre">ClusterClient</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.ClusterClient.read_step"><code class="docutils literal notranslate"><span class="pre">ClusterClient.read_step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.ClusterClient.add_step"><code class="docutils literal notranslate"><span class="pre">ClusterClient.add_step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.ClusterClient.wait"><code class="docutils literal notranslate"><span class="pre">ClusterClient.wait()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.ClusterClient.get_step"><code class="docutils literal notranslate"><span class="pre">ClusterClient.get_step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.ClusterClient.list_steps"><code class="docutils literal notranslate"><span class="pre">ClusterClient.list_steps()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.client.DatabaseClient"><code class="docutils literal notranslate"><span class="pre">DatabaseClient</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.DatabaseClient.stage"><code class="docutils literal notranslate"><span class="pre">DatabaseClient.stage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.DatabaseClient.jdbc_url"><code class="docutils literal notranslate"><span class="pre">DatabaseClient.jdbc_url()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.DatabaseClient.read"><code class="docutils literal notranslate"><span class="pre">DatabaseClient.read()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.DatabaseClient.write"><code class="docutils literal notranslate"><span class="pre">DatabaseClient.write()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.DatabaseClient.overwrite"><code class="docutils literal notranslate"><span class="pre">DatabaseClient.overwrite()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.DatabaseClient.export"><code class="docutils literal notranslate"><span class="pre">DatabaseClient.export()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.client.OneingestClient"><code class="docutils literal notranslate"><span class="pre">OneingestClient</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.OneingestClient.stage"><code class="docutils literal notranslate"><span class="pre">OneingestClient.stage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.OneingestClient.submit"><code class="docutils literal notranslate"><span class="pre">OneingestClient.submit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.OneingestClient.submit_grpc"><code class="docutils literal notranslate"><span class="pre">OneingestClient.submit_grpc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.OneingestClient.submit_rest"><code class="docutils literal notranslate"><span class="pre">OneingestClient.submit_rest()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.OneingestClient.get_file_paths"><code class="docutils literal notranslate"><span class="pre">OneingestClient.get_file_paths()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.client.OneingestClient.evaluate_submission"><code class="docutils literal notranslate"><span class="pre">OneingestClient.evaluate_submission()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="request.html">Shuttle Request Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common.html">Shuttle Common Package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Shuttle: Trade Credit ETL Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Shuttle Client Package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/client.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="shuttle-client-package">
+<h1>Shuttle Client Package<a class="headerlink" href="#shuttle-client-package" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<section id="module-shuttle.client">
+<span id="shuttle-client"></span><h2>shuttle.client<a class="headerlink" href="#module-shuttle.client" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="shuttle.client.GithubClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shuttle.client.</span></span><span class="sig-name descname"><span class="pre">GithubClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">github</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/git.html#GithubClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.GithubClient" title="Permalink to this definition"></a></dt>
+<dd><p>Read and write to a Github Enterprise repository.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>github</strong> (<a class="reference internal" href="common.html#shuttle.common.model.GithubConfig" title="shuttle.common.model.GithubConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">GithubConfig</span></code></a>) – Github repository configuration.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.GithubClient.get_repo">
+<span class="sig-name descname"><span class="pre">get_repo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/git.html#GithubClient.get_repo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.GithubClient.get_repo" title="Permalink to this definition"></a></dt>
+<dd><p>Get repository object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Repository</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.GithubClient.get_file_string">
+<span class="sig-name descname"><span class="pre">get_file_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/git.html#GithubClient.get_file_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.GithubClient.get_file_string" title="Permalink to this definition"></a></dt>
+<dd><p>Get contents of file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – File path in repository.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="shuttle.client.VaultClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shuttle.client.</span></span><span class="sig-name descname"><span class="pre">VaultClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lockbox</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/vault.html#VaultClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.VaultClient" title="Permalink to this definition"></a></dt>
+<dd><p>Authenticates with COS and reads specified secrets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lockbox</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">VaultConfig</span></code>) – Lockbox configuration.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.VaultClient.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/vault.html#VaultClient.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.VaultClient.read" title="Permalink to this definition"></a></dt>
+<dd><p>Read a secret from the specified lockbox location</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Lockbox path.</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Path key.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="shuttle.client.StageClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shuttle.client.</span></span><span class="sig-name descname"><span class="pre">StageClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spark</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/stage.html#StageClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.StageClient" title="Permalink to this definition"></a></dt>
+<dd><p>Client to read and write from s3 staging directory.</p>
+<dl class="simple">
+<dt>job</dt><dd><p>Job configuration.</p>
+</dd>
+<dt>spark</dt><dd><p>Spark session.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.StageClient.stage">
+<span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/stage.html#StageClient.stage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.StageClient.stage" title="Permalink to this definition"></a></dt>
+<dd><p>Get s3 staging address for a given date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>date</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Staging date.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.StageClient.schema">
+<span class="sig-name descname"><span class="pre">schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/stage.html#StageClient.schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.StageClient.schema" title="Permalink to this definition"></a></dt>
+<dd><p>Get s3 schema key for a given date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>date</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Staging date.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.StageClient.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/stage.html#StageClient.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.StageClient.read" title="Permalink to this definition"></a></dt>
+<dd><p>Read data from staging address for a given date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>date</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Staging date.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.StageClient.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/stage.html#StageClient.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.StageClient.write" title="Permalink to this definition"></a></dt>
+<dd><p>Write dataframe records to staging address for a given date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Data to write.</p></li>
+<li><p><strong>date</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Staging date.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.StageClient.read_parquet">
+<span class="sig-name descname"><span class="pre">read_parquet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage_uri</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/stage.html#StageClient.read_parquet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.StageClient.read_parquet" title="Permalink to this definition"></a></dt>
+<dd><p>Read parquet extract from staging address.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>stage_uri</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Staging address.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.StageClient.write_parquet">
+<span class="sig-name descname"><span class="pre">write_parquet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage_uri</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/stage.html#StageClient.write_parquet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.StageClient.write_parquet" title="Permalink to this definition"></a></dt>
+<dd><p>Write dataframe to staging address in parquet format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Data to write.</p></li>
+<li><p><strong>stage_uri</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Staging address.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.StageClient.read_csv">
+<span class="sig-name descname"><span class="pre">read_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage_uri</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/stage.html#StageClient.read_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.StageClient.read_csv" title="Permalink to this definition"></a></dt>
+<dd><p>Read csv extract from staging address.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stage_uri</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Staging address.</p></li>
+<li><p><strong>schema_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Schema key.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.StageClient.write_csv">
+<span class="sig-name descname"><span class="pre">write_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage_uri</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/stage.html#StageClient.write_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.StageClient.write_csv" title="Permalink to this definition"></a></dt>
+<dd><p>Write dataframe to staging address in csv format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Data to write.</p></li>
+<li><p><strong>stage_uri</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Staging address.</p></li>
+<li><p><strong>schema_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Schema key.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="shuttle.client.SourceClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shuttle.client.</span></span><span class="sig-name descname"><span class="pre">SourceClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">github</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_stage</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/source.html#SourceClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.SourceClient" title="Permalink to this definition"></a></dt>
+<dd><p>Resolve the source queries associated with an extract.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>job</strong> (<a class="reference internal" href="common.html#shuttle.common.model.JobConfig" title="shuttle.common.model.JobConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">JobConfig</span></code></a>) – Job configuration.</p></li>
+<li><p><strong>github</strong> (<a class="reference internal" href="#shuttle.client.GithubClient" title="shuttle.client.git.GithubClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">GithubClient</span></code></a>) – Github repository client.</p></li>
+<li><p><strong>s3_stage</strong> (<a class="reference internal" href="#shuttle.client.StageClient" title="shuttle.client.stage.StageClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">StageClient</span></code></a>) – S3 staging client.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.client.SourceClient.mssql">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mssql</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#shuttle.client.SourceClient.mssql" title="Permalink to this definition"></a></dt>
+<dd><p>Get <code class="docutils literal notranslate"><span class="pre">SQL</span> <span class="pre">Server</span></code> source query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.client.SourceClient.psql">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">psql</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#shuttle.client.SourceClient.psql" title="Permalink to this definition"></a></dt>
+<dd><p>Get <code class="docutils literal notranslate"><span class="pre">PostgreSQL</span></code> source query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.SourceClient.get_queries">
+<span class="sig-name descname"><span class="pre">get_queries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/source.html#SourceClient.get_queries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.SourceClient.get_queries" title="Permalink to this definition"></a></dt>
+<dd><p>Get all queries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Server/source query mapping.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DotMap</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.SourceClient.get_query">
+<span class="sig-name descname"><span class="pre">get_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/source.html#SourceClient.get_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.SourceClient.get_query" title="Permalink to this definition"></a></dt>
+<dd><p>Get query for a given server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>server</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Server to query.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Query string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.SourceClient.apply_delta">
+<span class="sig-name descname"><span class="pre">apply_delta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/source.html#SourceClient.apply_delta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.SourceClient.apply_delta" title="Permalink to this definition"></a></dt>
+<dd><p>Format source query with the maximum staged value of the delta key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Query string.</p></li>
+<li><p><strong>date</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Current date.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Formatted query string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="shuttle.client.TuringClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shuttle.client.</span></span><span class="sig-name descname"><span class="pre">TuringClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">devex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/turing.html#TuringClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.TuringClient" title="Permalink to this definition"></a></dt>
+<dd><p>Tokenize records with Turing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>job</strong> (<a class="reference internal" href="common.html#shuttle.common.model.JobConfig" title="shuttle.common.model.JobConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">JobConfig</span></code></a>) – Job configuration.</p></li>
+<li><p><strong>devex</strong> (<a class="reference internal" href="common.html#shuttle.common.model.DevExchangeConfig" title="shuttle.common.model.DevExchangeConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DevExchangeConfig</span></code></a>) – DevExchange Configuration.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.TuringClient.tokenize">
+<span class="sig-name descname"><span class="pre">tokenize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extract</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/turing.html#TuringClient.tokenize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.TuringClient.tokenize" title="Permalink to this definition"></a></dt>
+<dd><p>Tokenize extract.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>extract</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Extract to tokenize.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.TuringClient.apply_turing">
+<span class="sig-name descname"><span class="pre">apply_turing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extract</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/turing.html#TuringClient.apply_turing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.TuringClient.apply_turing" title="Permalink to this definition"></a></dt>
+<dd><p>Apply turing tokenization to extract.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>extract</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Extract to tokenize.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>success</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Dataframe of records that were tokenized.</p></li>
+<li><p><strong>error</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Dataframe of records that were not tokenized.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.TuringClient.get_turing_config">
+<span class="sig-name descname"><span class="pre">get_turing_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/turing.html#TuringClient.get_turing_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.TuringClient.get_turing_config" title="Permalink to this definition"></a></dt>
+<dd><p>Get Turing configuration object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://q2.cloud.capitalone.com/docs/latest/api/python/turing.html#q2.turing.turing.TuringConfig" title="(in Q2 -- Next-generation Quantum Spark Library v2.0.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TuringConfig</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.TuringClient.get_turing_fields">
+<span class="sig-name descname"><span class="pre">get_turing_fields</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/turing.html#TuringClient.get_turing_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.TuringClient.get_turing_fields" title="Permalink to this definition"></a></dt>
+<dd><p>Convert dictionary of tokenization scopes to list of TuringField objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list[TuringField]</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="shuttle.client.ClusterClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shuttle.client.</span></span><span class="sig-name descname"><span class="pre">ClusterClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">github</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jobFlowId</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/cluster.html#ClusterClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.ClusterClient" title="Permalink to this definition"></a></dt>
+<dd><p>Interface for interacting with an EMR cluster.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>github</strong> (<a class="reference internal" href="#shuttle.client.GithubClient" title="shuttle.client.git.GithubClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">GithubClient</span></code></a>) – Github repository client.</p></li>
+<li><p><strong>template</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Template for EMR step substitution.</p></li>
+<li><p><strong>jobFlowId</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – EMR cluster ID for the current EC2 instance.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.ClusterClient.read_step">
+<span class="sig-name descname"><span class="pre">read_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">step</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/cluster.html#ClusterClient.read_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.ClusterClient.read_step" title="Permalink to this definition"></a></dt>
+<dd><p>Read step from the github configuration repository, and
+subsitute templated values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Step configuration file stem.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Step configuration mapping.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.ClusterClient.add_step">
+<span class="sig-name descname"><span class="pre">add_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">step_config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/cluster.html#ClusterClient.add_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.ClusterClient.add_step" title="Permalink to this definition"></a></dt>
+<dd><p>Add cluster step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>step_config</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>) – Step configuration mapping.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Step ID of a successfully added step.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.ClusterClient.wait">
+<span class="sig-name descname"><span class="pre">wait</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">step_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/cluster.html#ClusterClient.wait"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.ClusterClient.wait" title="Permalink to this definition"></a></dt>
+<dd><p>Wait for cluster step to complete.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>step_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of step to wait for.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.ClusterClient.get_step">
+<span class="sig-name descname"><span class="pre">get_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">step_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/cluster.html#ClusterClient.get_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.ClusterClient.get_step" title="Permalink to this definition"></a></dt>
+<dd><p>Get details of cluster step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>step_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of step to describe.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>step_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Step ID.</p></li>
+<li><p><strong>step_state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Step state.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.ClusterClient.list_steps">
+<span class="sig-name descname"><span class="pre">list_steps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/cluster.html#ClusterClient.list_steps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.ClusterClient.list_steps" title="Permalink to this definition"></a></dt>
+<dd><p>List all cluster steps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Contains the list of steps under key <code class="docutils literal notranslate"><span class="pre">Steps</span></code>, returned in reverse order.
+This means that the last step is the first element in the list.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="shuttle.client.DatabaseClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shuttle.client.</span></span><span class="sig-name descname"><span class="pre">DatabaseClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spark</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/database.html#DatabaseClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.DatabaseClient" title="Permalink to this definition"></a></dt>
+<dd><p>Read and write to databases via Spark JDBC and Sqoop.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>job</strong> (<a class="reference internal" href="common.html#shuttle.common.model.JobConfig" title="shuttle.common.model.JobConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">JobConfig</span></code></a>) – Job configuration.</p></li>
+<li><p><strong>spark</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">SparkSession</span></code>) – Spark session.</p></li>
+<li><p><strong>database</strong> (<a class="reference internal" href="common.html#shuttle.common.model.DatabaseConfig" title="shuttle.common.model.DatabaseConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatabaseConfig</span></code></a>) – Database Configuration.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.DatabaseClient.stage">
+<span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/database.html#DatabaseClient.stage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.DatabaseClient.stage" title="Permalink to this definition"></a></dt>
+<dd><p>Get s3 staging address for a given date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>date</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>) – Staging date.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.DatabaseClient.jdbc_url">
+<span class="sig-name descname"><span class="pre">jdbc_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/database.html#DatabaseClient.jdbc_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.DatabaseClient.jdbc_url" title="Permalink to this definition"></a></dt>
+<dd><p>Get JDBC connection string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>host</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Server host address.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.DatabaseClient.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/database.html#DatabaseClient.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.DatabaseClient.read" title="Permalink to this definition"></a></dt>
+<dd><p>Read from database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>query</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Query to execute.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.DatabaseClient.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/database.html#DatabaseClient.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.DatabaseClient.write" title="Permalink to this definition"></a></dt>
+<dd><p>Write to database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>query</strong> – Data to write.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.DatabaseClient.overwrite">
+<span class="sig-name descname"><span class="pre">overwrite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/database.html#DatabaseClient.overwrite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.DatabaseClient.overwrite" title="Permalink to this definition"></a></dt>
+<dd><p>Truncate and load dataframe records to database staging table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Dataframe to write.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.DatabaseClient.export">
+<span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/database.html#DatabaseClient.export"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.DatabaseClient.export" title="Permalink to this definition"></a></dt>
+<dd><p>Export from s3 staging directory to database staging table.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="shuttle.client.OneingestClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shuttle.client.</span></span><span class="sig-name descname"><span class="pre">OneingestClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">devex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/oneingest.html#OneingestClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.OneingestClient" title="Permalink to this definition"></a></dt>
+<dd><p>Publish records with OneIngest via REST or gRPC.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>job</strong> (<a class="reference internal" href="common.html#shuttle.common.model.JobConfig" title="shuttle.common.model.JobConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">JobConfig</span></code></a>) – Job configuration.</p></li>
+<li><p><strong>devex</strong> (<a class="reference internal" href="common.html#shuttle.common.model.DevExchangeConfig" title="shuttle.common.model.DevExchangeConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DevExchangeConfig</span></code></a>) – DevExchange Configuration.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.OneingestClient.stage">
+<span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/oneingest.html#OneingestClient.stage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.OneingestClient.stage" title="Permalink to this definition"></a></dt>
+<dd><p>Get s3 staging address for a given date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>date</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code>) – Staging date.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.OneingestClient.submit">
+<span class="sig-name descname"><span class="pre">submit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/oneingest.html#OneingestClient.submit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.OneingestClient.submit" title="Permalink to this definition"></a></dt>
+<dd><p>Submit records to OneIngest.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Data to submit.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.OneingestClient.submit_grpc">
+<span class="sig-name descname"><span class="pre">submit_grpc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/oneingest.html#OneingestClient.submit_grpc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.OneingestClient.submit_grpc" title="Permalink to this definition"></a></dt>
+<dd><p>Submit dataframe records to OneIngest via gRPC.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>df</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>) – Data to submit.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.OneingestClient.submit_rest">
+<span class="sig-name descname"><span class="pre">submit_rest</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/oneingest.html#OneingestClient.submit_rest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.OneingestClient.submit_rest" title="Permalink to this definition"></a></dt>
+<dd><p>Export files from s3 staging directory to OneIngest via REST.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.OneingestClient.get_file_paths">
+<span class="sig-name descname"><span class="pre">get_file_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/oneingest.html#OneingestClient.get_file_paths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.OneingestClient.get_file_paths" title="Permalink to this definition"></a></dt>
+<dd><p>List files to submit from s3 staging directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>stage</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – S3 staging address.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.client.OneingestClient.evaluate_submission">
+<span class="sig-name descname"><span class="pre">evaluate_submission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">submission_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/client/oneingest.html#OneingestClient.evaluate_submission"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.client.OneingestClient.evaluate_submission" title="Permalink to this definition"></a></dt>
+<dd><p>Evaluate the status of OneIngest multipart submission.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">MultipartClient</span></code>) – OneIngest multipart client.</p></li>
+<li><p><strong>submission_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – OneIngest multipart submission ID.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>statuses</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>) – Submission status for each part.</p></li>
+<li><p><strong>success</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – True is all parts of the submission succeeded. False otherwise.</p></li>
+<li><p><strong>terminated</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – True if the submission has terminated. False otherwise.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="session.html" class="btn btn-neutral float-left" title="Shuttle Session" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="request.html" class="btn btn-neutral float-right" title="Shuttle Request Package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Capital One.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

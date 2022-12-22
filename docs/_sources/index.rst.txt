@@ -1,0 +1,16 @@
+Welcome to Shuttle API Docs!
+============================
+
+.. toctree::
+   :caption: Table of contents
+   :maxdepth: 3
+
+   pipeline
+   session
+   client
+   request
+   common
+
+Indices
+
+* :ref:`search`

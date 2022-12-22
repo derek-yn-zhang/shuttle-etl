@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>shuttle.session &mdash; Shuttle: Trade Credit ETL Library  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Shuttle: Trade Credit ETL Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../pipeline.html">Shuttle Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../session.html">Shuttle Session</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../client.html">Shuttle Client Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../request.html">Shuttle Request Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../common.html">Shuttle Common Package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Shuttle: Trade Credit ETL Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">shuttle.session</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for shuttle.session</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">logging.handlers</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">dotmap</span> <span class="kn">import</span> <span class="n">DotMap</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
+<span class="kn">import</span> <span class="nn">shuttle.common.pprint</span> <span class="k">as</span> <span class="nn">pprint</span>
+<span class="kn">from</span> <span class="nn">q2</span> <span class="kn">import</span> <span class="n">make_q2_sparkconf</span><span class="p">,</span> <span class="n">patch_q2_session</span>
+<span class="kn">from</span> <span class="nn">shuttle.common.model</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">JobConfig</span><span class="p">,</span>
+    <span class="n">VaultConfig</span><span class="p">,</span>
+    <span class="n">GithubConfig</span><span class="p">,</span>
+    <span class="n">DatabaseConfig</span><span class="p">,</span>
+    <span class="n">DevExchangeConfig</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">shuttle.client</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">GithubClient</span><span class="p">,</span>
+    <span class="n">VaultClient</span><span class="p">,</span>
+    <span class="n">StageClient</span><span class="p">,</span>
+    <span class="n">SourceClient</span><span class="p">,</span>
+    <span class="n">TuringClient</span><span class="p">,</span>
+    <span class="n">ClusterClient</span><span class="p">,</span>
+    <span class="n">DatabaseClient</span><span class="p">,</span>
+    <span class="n">OneingestClient</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Session"><a class="viewcode-back" href="../../session.html#shuttle.session.Session">[docs]</a><span class="k">class</span> <span class="nc">Session</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The ``Session`` class is the environment execution context.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    config_file</span>
+<span class="sd">        Configuration file name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_job</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_file</span> <span class="o">=</span> <span class="n">config_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_instance_profile</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_config</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_secrets</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spark</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spark_session</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_constants</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">print_config</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">job</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobConfig</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get current job configuration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_job</span>
+
+    <span class="nd">@job</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job</span><span class="p">:</span> <span class="n">JobConfig</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set job configuration for the current session.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        job</span>
+<span class="sd">            Job configuration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_job</span> <span class="o">=</span> <span class="n">job</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">template</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get EMR template, populated with exported constants.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">accountId</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get AWS account ID for the current EC2 instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">instance</span><span class="p">[</span><span class="s2">&quot;accountId&quot;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">region</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get AWS region for the current EC2 instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">instance</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">jobFlowId</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get EMR cluster ID for the current EC2 instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">instance</span><span class="p">[</span><span class="s2">&quot;jobFlowId&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cluster</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ClusterClient</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get cluster client for the current EC2 instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">ClusterClient</span><span class="p">(</span>
+            <span class="n">github</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">github</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">,</span> <span class="n">jobFlowId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jobFlowId</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">vault</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VaultClient</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get vault client with the provided lockbox configuration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">VaultClient</span><span class="p">(</span><span class="n">lockbox</span><span class="o">=</span><span class="n">VaultConfig</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">lockbox</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">devex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DevExchangeConfig</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get DevExchange configuration object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">DevExchangeConfig</span><span class="p">(</span>
+            <span class="n">env</span><span class="o">=</span><span class="s2">&quot;PROD&quot;</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;api_env&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;PROD&quot;</span> <span class="k">else</span> <span class="s2">&quot;IT&quot;</span><span class="p">,</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">devex</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">github</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GithubClient</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get Github client with the provided Github repository configuration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">GithubClient</span><span class="p">(</span><span class="n">github</span><span class="o">=</span><span class="n">GithubConfig</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">github</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ops</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DatabaseClient</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get ``ops`` database client with the provided server configuration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">DatabaseClient</span><span class="p">(</span>
+            <span class="n">job</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="p">,</span>
+            <span class="n">spark</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spark</span><span class="p">,</span>
+            <span class="n">database</span><span class="o">=</span><span class="n">DatabaseConfig</span><span class="p">(</span><span class="n">database</span><span class="o">=</span><span class="s2">&quot;ops&quot;</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">mssql</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mssql</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DatabaseClient</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get ``SQL Server`` master database client with the provided server configuration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">DatabaseClient</span><span class="p">(</span>
+            <span class="n">job</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="p">,</span>
+            <span class="n">spark</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spark</span><span class="p">,</span>
+            <span class="n">database</span><span class="o">=</span><span class="n">DatabaseConfig</span><span class="p">(</span><span class="n">database</span><span class="o">=</span><span class="s2">&quot;homer&quot;</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">mssql</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">psql</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DatabaseClient</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get ``PostgreSQL`` master database client with the provided server configuration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">DatabaseClient</span><span class="p">(</span>
+            <span class="n">job</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="p">,</span>
+            <span class="n">spark</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spark</span><span class="p">,</span>
+            <span class="n">database</span><span class="o">=</span><span class="n">DatabaseConfig</span><span class="p">(</span><span class="n">database</span><span class="o">=</span><span class="s2">&quot;barney&quot;</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">psql</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">s3_stage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StageClient</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get s3 stage client for the current extract.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">StageClient</span><span class="p">(</span><span class="n">job</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="p">,</span> <span class="n">spark</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spark</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">source</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SourceClient</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get source client for the current extract.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">SourceClient</span><span class="p">(</span><span class="n">job</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="p">,</span> <span class="n">github</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">github</span><span class="p">,</span> <span class="n">s3_stage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">s3_stage</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">turing</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TuringClient</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get Turing client with the provided DevExchange configuration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">TuringClient</span><span class="p">(</span><span class="n">job</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="p">,</span> <span class="n">devex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">devex</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">oneingest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OneingestClient</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get OneIngest client with the provided DevExchange configuration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">OneingestClient</span><span class="p">(</span><span class="n">job</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="p">,</span> <span class="n">devex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">devex</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Session.get_instance_profile"><a class="viewcode-back" href="../../session.html#shuttle.session.Session.get_instance_profile">[docs]</a>    <span class="k">def</span> <span class="nf">get_instance_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read instance attributes from the local EC2 meta store.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict:</span>
+<span class="sd">            Dictionary of instance data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/mnt/var/lib/info/extraInstanceData.json&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Session.parse_config"><a class="viewcode-back" href="../../session.html#shuttle.session.Session.parse_config">[docs]</a>    <span class="k">def</span> <span class="nf">parse_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DotMap</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse configuration file based on the environment.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        config_file</span>
+<span class="sd">            Configuration file name.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        DotMap:</span>
+<span class="sd">            Parsed configuration mapping.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/home/hadoop&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">config_file</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+
+            <span class="n">contents</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">contents</span><span class="p">[</span><span class="s2">&quot;global&quot;</span><span class="p">]</span>
+            <span class="n">account</span> <span class="o">=</span> <span class="n">contents</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">accountId</span><span class="p">][</span><span class="s2">&quot;default&quot;</span><span class="p">]</span>
+            <span class="n">region</span> <span class="o">=</span> <span class="n">contents</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">accountId</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_config</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_config</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">display</span> <span class="o">=</span> <span class="n">DotMap</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">DotMap</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Session.update_config"><a class="viewcode-back" href="../../session.html#shuttle.session.Session.update_config">[docs]</a>    <span class="k">def</span> <span class="nf">update_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Helper method for dictionary update and insert.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        update</span>
+<span class="sd">            Dictionary to merge.</span>
+<span class="sd">        config</span>
+<span class="sd">            Dictionary to update.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">update</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+                <span class="n">config</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">config</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="Session.load_secrets"><a class="viewcode-back" href="../../session.html#shuttle.session.Session.load_secrets">[docs]</a>    <span class="k">def</span> <span class="nf">load_secrets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">DotMap</span><span class="p">,</span> <span class="n">display</span><span class="p">:</span> <span class="n">DotMap</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load secrets into configuration mapping.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        config</span>
+<span class="sd">            Configuration mapping.</span>
+<span class="sd">        display</span>
+<span class="sd">            Display mapping (sensitive values are obscured).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="s2">&quot;key&quot;</span><span class="p">}:</span>
+                    <span class="n">config</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vault</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+                    <span class="n">display</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obscure</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">load_secrets</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">display</span><span class="p">[</span><span class="n">k</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Session.obscure"><a class="viewcode-back" href="../../session.html#shuttle.session.Session.obscure">[docs]</a>    <span class="k">def</span> <span class="nf">obscure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">peek</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Helper method for obscuring strings.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        value</span>
+<span class="sd">            String to obscure.</span>
+<span class="sd">        peek: int, optional</span>
+<span class="sd">            Number of characters to keep visible.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="s2">&quot;*&quot;</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">-</span> <span class="n">peek</span><span class="p">)</span> <span class="o">+</span> <span class="n">value</span><span class="p">[</span><span class="o">-</span><span class="n">peek</span><span class="p">:]</span></div>
+
+<div class="viewcode-block" id="Session.get_spark_session"><a class="viewcode-back" href="../../session.html#shuttle.session.Session.get_spark_session">[docs]</a>    <span class="k">def</span> <span class="nf">get_spark_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SparkSession</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get spark session.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">spark</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[*]&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.driver.extraClassPath&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">constants</span><span class="p">[</span><span class="s2">&quot;SPARK_JARS&quot;</span><span class="p">])</span>
+            <span class="o">.</span><span class="n">config</span><span class="p">(</span>
+                <span class="s2">&quot;spark.executor.extraClassPath&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">constants</span><span class="p">[</span><span class="s2">&quot;SPARK_JARS&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">conf</span><span class="o">=</span><span class="n">make_q2_sparkconf</span><span class="p">())</span>
+            <span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">patch_q2_session</span><span class="p">(</span><span class="n">spark</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">spark</span></div>
+
+<div class="viewcode-block" id="Session.export_constants"><a class="viewcode-back" href="../../session.html#shuttle.session.Session.export_constants">[docs]</a>    <span class="k">def</span> <span class="nf">export_constants</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Export constants as environment variables.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span></div>
+
+    <span class="k">def</span> <span class="nf">print_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pprint</span><span class="o">.</span><span class="n">banner</span><span class="p">(</span><span class="s2">&quot;ENV CONFIGURATION&quot;</span><span class="p">)</span>
+        <span class="n">pprint</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">toDict</span><span class="p">())</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Capital One.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

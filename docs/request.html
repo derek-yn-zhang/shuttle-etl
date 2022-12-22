@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shuttle Request Package &mdash; Shuttle: Trade Credit ETL Library  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Shuttle Common Package" href="common.html" />
+    <link rel="prev" title="Shuttle Client Package" href="client.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Shuttle: Trade Credit ETL Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pipeline.html">Shuttle Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="session.html">Shuttle Session</a></li>
+<li class="toctree-l1"><a class="reference internal" href="client.html">Shuttle Client Package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Shuttle Request Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-shuttle.request.base">shuttle.request.base</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.request.base.BaseRequest"><code class="docutils literal notranslate"><span class="pre">BaseRequest</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.request.base.BaseRequest.domain"><code class="docutils literal notranslate"><span class="pre">BaseRequest.domain</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.request.base.BaseRequest.endpoint"><code class="docutils literal notranslate"><span class="pre">BaseRequest.endpoint</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.request.base.BaseRequest.headers"><code class="docutils literal notranslate"><span class="pre">BaseRequest.headers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.request.base.BaseRequest.params"><code class="docutils literal notranslate"><span class="pre">BaseRequest.params</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.request.base.BaseRequest.data"><code class="docutils literal notranslate"><span class="pre">BaseRequest.data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.request.base.BaseRequest.set_certificate"><code class="docutils literal notranslate"><span class="pre">BaseRequest.set_certificate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.request.base.BaseRequest.send"><code class="docutils literal notranslate"><span class="pre">BaseRequest.send()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-shuttle.request.auth">shuttle.request.auth</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.request.auth.OAuth2"><code class="docutils literal notranslate"><span class="pre">OAuth2</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.request.auth.OAuth2.token"><code class="docutils literal notranslate"><span class="pre">OAuth2.token</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.request.auth.BasicAuth"><code class="docutils literal notranslate"><span class="pre">BasicAuth</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#shuttle.request.auth.BearerTokenRequest"><code class="docutils literal notranslate"><span class="pre">BearerTokenRequest</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.request.auth.BearerTokenRequest.endpoint"><code class="docutils literal notranslate"><span class="pre">BearerTokenRequest.endpoint</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.request.auth.BearerTokenRequest.data"><code class="docutils literal notranslate"><span class="pre">BearerTokenRequest.data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shuttle.request.auth.BearerTokenRequest.headers"><code class="docutils literal notranslate"><span class="pre">BearerTokenRequest.headers</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="common.html">Shuttle Common Package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Shuttle: Trade Credit ETL Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Shuttle Request Package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/request.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="shuttle-request-package">
+<h1>Shuttle Request Package<a class="headerlink" href="#shuttle-request-package" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<section id="module-shuttle.request.base">
+<span id="shuttle-request-base"></span><h2>shuttle.request.base<a class="headerlink" href="#module-shuttle.request.base" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="shuttle.request.base.BaseRequest">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shuttle.request.base.</span></span><span class="sig-name descname"><span class="pre">BaseRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/request/base.html#BaseRequest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.request.base.BaseRequest" title="Permalink to this definition"></a></dt>
+<dd><p>Factory DevExchange API request interface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>env</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – DevExchange environment. Accepted values are <code class="docutils literal notranslate"><span class="pre">IT</span></code> and <code class="docutils literal notranslate"><span class="pre">PROD</span></code>.</p></li>
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – HTTP method.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.request.base.BaseRequest.domain">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">domain</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#shuttle.request.base.BaseRequest.domain" title="Permalink to this definition"></a></dt>
+<dd><p>Get DevExchange domain based on the DevExchange environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.request.base.BaseRequest.endpoint">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">endpoint</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#shuttle.request.base.BaseRequest.endpoint" title="Permalink to this definition"></a></dt>
+<dd><p>Get request endpoint. Must be implemented for all requests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.request.base.BaseRequest.headers">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">headers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a></em><a class="headerlink" href="#shuttle.request.base.BaseRequest.headers" title="Permalink to this definition"></a></dt>
+<dd><p>Get request headers. Must be implemented for all requests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.request.base.BaseRequest.params">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a></em><a class="headerlink" href="#shuttle.request.base.BaseRequest.params" title="Permalink to this definition"></a></dt>
+<dd><p>Get request query parameters. This property only applies to <code class="docutils literal notranslate"><span class="pre">GET</span></code> and <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> requests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.request.base.BaseRequest.data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a></em><a class="headerlink" href="#shuttle.request.base.BaseRequest.data" title="Permalink to this definition"></a></dt>
+<dd><p>Get request body. This property only applies to <code class="docutils literal notranslate"><span class="pre">POST</span></code> and <code class="docutils literal notranslate"><span class="pre">PUT</span></code> requests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.request.base.BaseRequest.set_certificate">
+<span class="sig-name descname"><span class="pre">set_certificate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/request/base.html#BaseRequest.set_certificate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.request.base.BaseRequest.set_certificate" title="Permalink to this definition"></a></dt>
+<dd><p>Set enterprise SSL certificate bundle. The bundle will be downloaded as needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>SSL certificate bundle file path.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shuttle.request.base.BaseRequest.send">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/request/base.html#BaseRequest.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.request.base.BaseRequest.send" title="Permalink to this definition"></a></dt>
+<dd><p>Send request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.28.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Response</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-shuttle.request.auth">
+<span id="shuttle-request-auth"></span><h2>shuttle.request.auth<a class="headerlink" href="#module-shuttle.request.auth" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="shuttle.request.auth.OAuth2">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shuttle.request.auth.</span></span><span class="sig-name descname"><span class="pre">OAuth2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">devex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/request/auth.html#OAuth2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.request.auth.OAuth2" title="Permalink to this definition"></a></dt>
+<dd><p>DevExchange Authentication.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>devex</strong> (<a class="reference internal" href="common.html#shuttle.common.model.DevExchangeConfig" title="shuttle.common.model.DevExchangeConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DevExchangeConfig</span></code></a>) – DevExchange client configuration.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.request.auth.OAuth2.token">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#shuttle.request.auth.OAuth2.token" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve DevExchange Bearer Token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>DevExchange Bearer Token.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="shuttle.request.auth.BasicAuth">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shuttle.request.auth.</span></span><span class="sig-name descname"><span class="pre">BasicAuth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_secret</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/request/auth.html#BasicAuth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.request.auth.BasicAuth" title="Permalink to this definition"></a></dt>
+<dd><p>HTTP Basic authentication.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – OAuth client username.</p></li>
+<li><p><strong>client_secret</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – OAuth client password.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="shuttle.request.auth.BearerTokenRequest">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shuttle.request.auth.</span></span><span class="sig-name descname"><span class="pre">BearerTokenRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">credentials</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shuttle/request/auth.html#BearerTokenRequest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shuttle.request.auth.BearerTokenRequest" title="Permalink to this definition"></a></dt>
+<dd><p>Request for obtaining DevExchange Bearer Token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>env</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – DevExchange environment.</p></li>
+<li><p><strong>credentials</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – HTTP Basic authentication.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.request.auth.BearerTokenRequest.endpoint">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">endpoint</span></span><a class="headerlink" href="#shuttle.request.auth.BearerTokenRequest.endpoint" title="Permalink to this definition"></a></dt>
+<dd><p>Get request endpoint. Must be implemented for all requests.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.request.auth.BearerTokenRequest.data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#shuttle.request.auth.BearerTokenRequest.data" title="Permalink to this definition"></a></dt>
+<dd><p>Get request body. This property only applies to <code class="docutils literal notranslate"><span class="pre">POST</span></code> and <code class="docutils literal notranslate"><span class="pre">PUT</span></code> requests.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="shuttle.request.auth.BearerTokenRequest.headers">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">headers</span></span><a class="headerlink" href="#shuttle.request.auth.BearerTokenRequest.headers" title="Permalink to this definition"></a></dt>
+<dd><p>Get request headers. Must be implemented for all requests.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="client.html" class="btn btn-neutral float-left" title="Shuttle Client Package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="common.html" class="btn btn-neutral float-right" title="Shuttle Common Package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Capital One.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

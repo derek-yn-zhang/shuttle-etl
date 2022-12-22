@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>shuttle.client.database &mdash; Shuttle: Trade Credit ETL Library  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Shuttle: Trade Credit ETL Library
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pipeline.html">Shuttle Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../session.html">Shuttle Session</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../client.html">Shuttle Client Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../request.html">Shuttle Request Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../common.html">Shuttle Common Package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Shuttle: Trade Credit ETL Library</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">shuttle.client.database</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for shuttle.client.database</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">textwrap</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">logging.handlers</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">shuttle.common.path</span> <span class="k">as</span> <span class="nn">path</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">DataFrame</span>
+<span class="kn">from</span> <span class="nn">shuttle.common.model</span> <span class="kn">import</span> <span class="n">DatabaseConfig</span><span class="p">,</span> <span class="n">JobConfig</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DatabaseClient"><a class="viewcode-back" href="../../../client.html#shuttle.client.DatabaseClient">[docs]</a><span class="k">class</span> <span class="nc">DatabaseClient</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read and write to databases via Spark JDBC and Sqoop.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    job</span>
+<span class="sd">        Job configuration.</span>
+<span class="sd">    spark</span>
+<span class="sd">        Spark session.</span>
+<span class="sd">    database</span>
+<span class="sd">        Database Configuration.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job</span><span class="p">:</span> <span class="n">JobConfig</span><span class="p">,</span> <span class="n">spark</span><span class="p">:</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">database</span><span class="p">:</span> <span class="n">DatabaseConfig</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">job</span> <span class="o">=</span> <span class="n">job</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spark</span> <span class="o">=</span> <span class="n">spark</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">database</span> <span class="o">=</span> <span class="n">database</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        
+<div class="viewcode-block" id="DatabaseClient.stage"><a class="viewcode-back" href="../../../client.html#shuttle.client.DatabaseClient.stage">[docs]</a>    <span class="k">def</span> <span class="nf">stage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get s3 staging address for a given date.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        date</span>
+<span class="sd">            Staging date.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">return</span> <span class="n">path</span><span class="o">.</span><span class="n">stage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DatabaseClient.jdbc_url"><a class="viewcode-back" href="../../../client.html#shuttle.client.DatabaseClient.jdbc_url">[docs]</a>    <span class="k">def</span> <span class="nf">jdbc_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get JDBC connection string.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        host</span>
+<span class="sd">            Server host address.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">jdbc_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+            <span class="n">database</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">database</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="DatabaseClient.read"><a class="viewcode-back" href="../../../client.html#shuttle.client.DatabaseClient.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read from database.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        query</span>
+<span class="sd">            Query to execute.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">query</span> <span class="o">=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;(</span><span class="si">{}</span><span class="s2">) as temp&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;jdbc&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;driver&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">jdbc_driver</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">jdbc_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">read_host</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;numPartitions&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">num_partitions</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;dbtable&quot;</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">load</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="DatabaseClient.write"><a class="viewcode-back" href="../../../client.html#shuttle.client.DatabaseClient.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write to database.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        query</span>
+<span class="sd">            Data to write.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">update_mode</span> <span class="o">==</span> <span class="s2">&quot;overwrite&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">export</span><span class="p">()</span></div>
+            
+<div class="viewcode-block" id="DatabaseClient.overwrite"><a class="viewcode-back" href="../../../client.html#shuttle.client.DatabaseClient.overwrite">[docs]</a>    <span class="k">def</span> <span class="nf">overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Truncate and load dataframe records to database staging table.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df</span>
+<span class="sd">            Dataframe to write.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;jdbc&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;driver&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">jdbc_driver</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">jdbc_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">write_host</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;numPartitions&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">num_partitions</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;dbtable&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;staging.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;truncate&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s2">&quot;overwrite&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="p">)</span></div>
+            
+<div class="viewcode-block" id="DatabaseClient.export"><a class="viewcode-back" href="../../../client.html#shuttle.client.DatabaseClient.export">[docs]</a>    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Export from s3 staging directory to database staging table.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;sqoop&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;export&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;-D&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sqoop.export.records.per.statement=100&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;-D&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sqoop.export.statements.per.transaction=100&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;--num-mappers&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">sqoop_mappers</span><span class="p">,</span>
+            <span class="s2">&quot;--batch&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;--driver&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;com.microsoft.sqlserver.jdbc.SQLServerDriver&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;--connection-manager&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;org.apache.sqoop.manager.SQLServerManager&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;--connect&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">jdbc_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">write_host</span><span class="p">),</span>
+            <span class="s2">&quot;--table&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="p">,</span>
+            <span class="s2">&quot;--export-dir&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()),</span>
+            <span class="s2">&quot;--username&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+            <span class="s2">&quot;--password&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
+            <span class="s2">&quot;--input-fields-terminated-by&quot;</span><span class="p">,</span>
+            <span class="s1">&#39;&quot;</span><span class="se">\t</span><span class="s1">&quot;&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;--input-lines-terminated-by&quot;</span><span class="p">,</span>
+            <span class="s1">&#39;&quot;</span><span class="se">\n</span><span class="s1">&quot;&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">update_mode</span> <span class="o">==</span> <span class="s2">&quot;upsert&quot;</span><span class="p">:</span>
+            <span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="s2">&quot;--update-key&quot;</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="o">.</span><span class="n">sqoop_update_key</span><span class="p">,</span>
+                    <span class="s2">&quot;--update-mode&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;allowinsert&quot;</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+
+        <span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;--&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;--schema&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;staging&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully executed writing to ops.staging.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;An error occured while writing to ops.staging.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div></div>
+
+
+<span class="sd">&quot;&quot;&quot;SQOOP</span>
+
+<span class="sd">sqoop export -D sqoop.export.text.dump_data_on_error=true -D sqoop.export.records.per.statement=1000 -D sqoop.export.statements.per.transaction=100 --num-mappers 20 --batch --driver com.microsoft.sqlserver.jdbc.SQLServerDriver --connection-manager org.apache.sqoop.manager.SQLServerManager --connect &quot;jdbc:sqlserver://mssql-dev.clouddqt.capitalone.com:1433;database=ops&quot; --table &quot;airsupply_extended_search&quot; --export-dir s3://cof-tradecredit-qa-dataservices/emr-store/airsupply_extended_search_2022_11_24/ --username svc_etl --password dKUT9pYNX47SzDeK --input-fields-terminated-by &quot;|&quot; --input-lines-terminated-by &quot;\n&quot; -- --schema staging --verbose</span>
+<span class="sd">sqoop list-tables --connect &quot;jdbc:sqlserver://mssql-dev.clouddqt.capitalone.com:1433;database=ops&quot; --username svc_etl --password dKUT9pYNX47SzDeK -- --schema staging</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Capital One.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
